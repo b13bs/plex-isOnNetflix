@@ -41,11 +41,13 @@ if __name__ == "__main__":
 
     duplicates = []
     duplicates_uncertain = []
+    movies_without_imdb_tag = []
 
     for video in movies.search():
         title = video.title
         logger.debug("[.] %s " % title)
         if "imdb://" not in video.guid:
+            movies_without_imdb_tag.append(title)
             logger.warning("[-] No IMDB id for %s" % title)
 
         else:
@@ -109,5 +111,10 @@ if __name__ == "__main__":
             for elem in duplicates_uncertain:
                 f.write("%s\n" % elem)
 
+    if movies_without_imdb_tag:
+        with open(filename, "a") as f:
+            f.write("\n===== UNKNOWN (NO IMDB TAG FOUND) =====\n")
+            for elem in movies_without_imdb_tag:
+                f.write("%s\n" % elem)
 
     logger.info("Ending")
